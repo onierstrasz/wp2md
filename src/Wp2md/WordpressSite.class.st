@@ -28,7 +28,42 @@ WordpressSite >> allPages [
 		collect: [ :each | WordpressPage for: each ]
 ]
 
-{ #category : #accessing }
+{ #category : #exporting }
+WordpressSite >> cleanExport: aMarkdownString [
+	"Here we try to clean up the generated markdown."
+
+	| clean lflf lines newlines inList |
+	clean := aMarkdownString.
+	
+
+	"Replace CR by LF."
+	clean := clean copyReplaceAll: String cr with: String lf.	
+	
+	"Replace multiple blank lines by at most one."
+	lflf := String lf repeat: 2.
+	clean := clean copyWithRegex: '\n\n\n+' matchesReplacedWith: lflf.
+	
+	"Remove empty bullets."
+	clean := clean  copyWithRegex: '\n\-\s*\n' matchesReplacedWith: ''.
+	
+	"Remove blank lines with a list."
+	lines := String lf split: clean.
+	newlines := OrderedCollection new.
+	inList := false.
+	lines
+		do: [ :each | 
+			each isEmpty
+				ifTrue: [ inList ifFalse: [ newlines add: each ] ]
+				ifFalse: [ (each beginsWith: '- ')
+						ifTrue: [ inList := true ]
+						ifFalse: [ inList := false ].
+					newlines add: each ] ].
+	clean := String lf join: newlines.
+
+	^ clean
+]
+
+{ #category : #exporting }
 WordpressSite >> export [
 	| targetFolder file |
 	targetFolder := self exportFolder.
@@ -36,7 +71,7 @@ WordpressSite >> export [
 		do: [ :page | 
 			file := targetFolder / page exportFilename.
 			file
-				writeStreamDo: [ :aStream | aStream nextPutAll: (page markdown copyReplaceAll: String cr with: String lf) ] ].
+				writeStreamDo: [ :aStream | aStream nextPutAll: (self cleanExport: page markdown) ] ].
 	^ targetFolder
 ]
 
