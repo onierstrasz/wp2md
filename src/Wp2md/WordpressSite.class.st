@@ -18,7 +18,7 @@ WordpressSite class >> from: anXMLFile [
 { #category : #'instance creation' }
 WordpressSite class >> icBerne [
 	^ self
-		from: 'pharo-local/iceberg/onierstrasz/icberne/wordpressData/theinternationalclubofberne.wordpress.2023-08-15.000.xml'
+		from: 'pharo-local/iceberg/onierstrasz/wp2md/wordpressData/theinternationalclubofberne.wordpress.2023-08-15.000.xml'
 				asFileReference
 ]
 
