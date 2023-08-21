@@ -165,6 +165,9 @@ title: ' , self title
 layout: page
 permalink: ' , self path
 		, '
+header:
+  image: /assets/images/bernSkylineWide.jpg
+  image_description: "City of Bern skyline"
 ---
 
 '
